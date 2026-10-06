@@ -60,6 +60,9 @@ import { createIncident } from './services/incidentService';
 import { executeDispatch } from './services/dispatchService';
 import { transitionMissionState } from './services/missionService';
 
+// Change this to your own name. It is used wherever the app shows the citizen's name.
+const MY_NAME = 'Prateek Nayan';
+
 /**
  * Computes complete authoritative routing decision:
  * 1. Queries OSRM candidate routes
@@ -142,9 +145,12 @@ export function App() {
 
   // ─── Active Role Selector (CITIZEN | COORDINATOR | RESPONDER) ─────────────
   const [userRole, setUserRole] = useState<UserRole>('CITIZEN');
-  const [citizenProfile] = useState<CitizenProfile>(DEFAULT_CITIZEN_PROFILE);
+  const [citizenProfile] = useState<CitizenProfile>({ ...DEFAULT_CITIZEN_PROFILE, name: MY_NAME });
   const [activeResponderId, setActiveResponderId] = useState<string>(INITIAL_RESPONDERS[0].id);
   const [selectedIncidentIdForReview, setSelectedIncidentIdForReview] = useState<string | null>(null);
+
+  // Side panel is closed until the user clicks the button
+  const [isPanelOpen, setIsPanelOpen] = useState<boolean>(false);
 
   // ─── Layer Visibility Toggles ─────────────────────────────────────────────
   const [visibleLayers, setVisibleLayers] = useState<VisibleLayersState>({
@@ -1042,74 +1048,85 @@ export function App() {
       {/* ─── Main Unified Workspace (Controls + Map) ─────────────────────────── */}
       <main className="rme-main-layout">
         {/* Role-Specific Non-Overlapping Control Dock */}
-        <RoleControlPanel
-          userRole={userRole}
-          start={start}
-          destination={destination}
-          startSource={startSource}
-          onUseGpsAsStart={handleUseGpsAsStart}
-          startOriginType={startOriginType}
-          onSetStartOriginType={setStartOriginType}
-          interactionMode={interactionMode}
-          onSetInteractionMode={handleSetInteractionMode}
-          onClearStart={() => {
-            setStart(null);
-            setStartSource('manual');
-            setStartOriginType('MAP_POINT');
-          }}
-          onClearDestination={() => setDestination(null)}
-          onCalculateRoute={handleCalculateRoute}
-          onResetRoute={() => {
-            setStart(null);
-            setDestination(null);
-            setStartSource('manual');
-            setStartOriginType('MAP_POINT');
-          }}
-          isLoading={isLoading}
-          decision={decision}
-          navEvaluation={navEvaluation}
-          presets={TEST_PRESETS}
-          onSelectPreset={handleSelectPreset}
-          safetyHubs={safetyHubs}
-          onSelectSafetyHub={handleSelectSafetyHub}
-          onFindBestSafeHub={handleFindBestSafeHub}
-          visibleLayers={visibleLayers}
-          onToggleLayer={handleToggleLayer}
-          liveLocationState={liveLocationState}
-          onToggleLiveLocation={handleToggleLiveLocation}
-          onRecenterGps={handleRecenterGps}
-          onSimulateGpsStep={handleSimulateGpsStep}
-          onSimulateGpsDeviate={handleSimulateGpsDeviate}
-          onSimulateGpsArrive={handleSimulateGpsArrive}
-          onRerouteFromGps={handleRerouteFromGps}
-          isSimulatingWalk={isSimulatingWalk}
-          onToggleSimulateWalk={handleToggleSimulateWalk}
-          citizenProfile={citizenProfile}
-          onTriggerSos={handleCitizenTriggerSos}
-          coordinatorMode={coordinatorMode}
-          onSetCoordinatorMode={handleSetCoordinatorMode}
-          onOpenCreateHubChoice={() => setIsCreateHubChoiceOpen(true)}
-          onOpenManageDrawer={() => setIsManageDrawerOpen(true)}
-          drawingPointsCount={drawingPoints.length}
-          onUndoDrawingPoint={handleUndoDrawingPoint}
-          onCompleteDrawing={handleCompleteDrawing}
-          onCancelDrawing={handleCancelDrawing}
-          onOpenConfirmSectionModal={() => setIsConfirmSectionModalOpen(true)}
-          incidents={incidents}
-          responders={responders}
-          missions={missions}
-          selectedIncidentId={selectedIncidentIdForReview}
-          onSelectIncident={setSelectedIncidentIdForReview}
-          onDispatchResponder={handleCoordinatorDispatch}
-          activeResponderId={activeResponderId}
-          onSelectResponder={setActiveResponderId}
-          onAcceptMission={handleResponderAcceptMission}
-          onStartEnRoute={handleResponderStartEnRoute}
-          onMarkArrived={handleResponderMarkArrived}
-          onResolveMission={handleResponderResolveMission}
-          onNavigateToMission={handleNavigateToMission}
-          isDeveloperMode={isDeveloperMode}
-        />
+        {isPanelOpen && (
+          <RoleControlPanel
+            userRole={userRole}
+            start={start}
+            destination={destination}
+            startSource={startSource}
+            onUseGpsAsStart={handleUseGpsAsStart}
+            startOriginType={startOriginType}
+            onSetStartOriginType={setStartOriginType}
+            interactionMode={interactionMode}
+            onSetInteractionMode={handleSetInteractionMode}
+            onClearStart={() => {
+              setStart(null);
+              setStartSource('manual');
+              setStartOriginType('MAP_POINT');
+            }}
+            onClearDestination={() => setDestination(null)}
+            onCalculateRoute={handleCalculateRoute}
+            onResetRoute={() => {
+              setStart(null);
+              setDestination(null);
+              setStartSource('manual');
+              setStartOriginType('MAP_POINT');
+            }}
+            isLoading={isLoading}
+            decision={decision}
+            navEvaluation={navEvaluation}
+            presets={TEST_PRESETS}
+            onSelectPreset={handleSelectPreset}
+            safetyHubs={safetyHubs}
+            onSelectSafetyHub={handleSelectSafetyHub}
+            onFindBestSafeHub={handleFindBestSafeHub}
+            visibleLayers={visibleLayers}
+            onToggleLayer={handleToggleLayer}
+            liveLocationState={liveLocationState}
+            onToggleLiveLocation={handleToggleLiveLocation}
+            onRecenterGps={handleRecenterGps}
+            onSimulateGpsStep={handleSimulateGpsStep}
+            onSimulateGpsDeviate={handleSimulateGpsDeviate}
+            onSimulateGpsArrive={handleSimulateGpsArrive}
+            onRerouteFromGps={handleRerouteFromGps}
+            isSimulatingWalk={isSimulatingWalk}
+            onToggleSimulateWalk={handleToggleSimulateWalk}
+            citizenProfile={citizenProfile}
+            onTriggerSos={handleCitizenTriggerSos}
+            coordinatorMode={coordinatorMode}
+            onSetCoordinatorMode={handleSetCoordinatorMode}
+            onOpenCreateHubChoice={() => setIsCreateHubChoiceOpen(true)}
+            onOpenManageDrawer={() => setIsManageDrawerOpen(true)}
+            drawingPointsCount={drawingPoints.length}
+            onUndoDrawingPoint={handleUndoDrawingPoint}
+            onCompleteDrawing={handleCompleteDrawing}
+            onCancelDrawing={handleCancelDrawing}
+            onOpenConfirmSectionModal={() => setIsConfirmSectionModalOpen(true)}
+            incidents={incidents}
+            responders={responders}
+            missions={missions}
+            selectedIncidentId={selectedIncidentIdForReview}
+            onSelectIncident={setSelectedIncidentIdForReview}
+            onDispatchResponder={handleCoordinatorDispatch}
+            activeResponderId={activeResponderId}
+            onSelectResponder={setActiveResponderId}
+            onAcceptMission={handleResponderAcceptMission}
+            onStartEnRoute={handleResponderStartEnRoute}
+            onMarkArrived={handleResponderMarkArrived}
+            onResolveMission={handleResponderResolveMission}
+            onNavigateToMission={handleNavigateToMission}
+            isDeveloperMode={isDeveloperMode}
+          />
+        )}
+
+        <button
+          type="button"
+          className={`rme-panel-toggle${isPanelOpen ? ' is-open' : ''}`}
+          onClick={() => setIsPanelOpen((v) => !v)}
+          aria-expanded={isPanelOpen}
+        >
+          {isPanelOpen ? 'Close controls' : 'Open controls'}
+        </button>
 
         {/* Primary Map Instance (Always Mounted, Zero Remounts) */}
         <div className="rme-map-viewport">

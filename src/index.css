@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap');
 
 :root {
   --bg-dark: #0f172a;
@@ -6871,3 +6872,73 @@ body, html {
 
 
 
+
+
+/* ==========================================================================
+   LOOK & FEEL OVERRIDES (flatter, calmer, less "template")
+   ========================================================================== */
+
+.rme-app-root,
+.rme-app-root button,
+.rme-app-root input,
+.rme-app-root select,
+.rme-app-root textarea {
+  font-family: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+.rme-header {
+  background: #0d1117;
+  box-shadow: none;
+  border-bottom: 1px solid #222a35;
+}
+
+.rme-control-panel {
+  background: #10151c;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 1px solid #252d39;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  animation: rme-panel-in 0.18s ease-out;
+}
+
+@keyframes rme-panel-in {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Open / close button for the side panel */
+.rme-panel-toggle {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 30;
+  padding: 9px 14px;
+  border: 1px solid #d6d3d1;
+  border-radius: 6px;
+  background: #f5f5f4;
+  color: #111827;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  transition: background 0.15s ease;
+}
+
+.rme-panel-toggle:hover {
+  background: #ffffff;
+}
+
+.rme-panel-toggle:focus-visible {
+  outline: 2px solid #f59e0b;
+  outline-offset: 2px;
+}
+
+/* When the panel is open, sit just to the right of it */
+.rme-panel-toggle.is-open {
+  left: min(436px, calc(100vw - 150px));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rme-control-panel { animation: none; }
+}
